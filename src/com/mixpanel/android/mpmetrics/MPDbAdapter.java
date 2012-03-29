@@ -158,17 +158,20 @@ public class MPDbAdapter {
 	}
 
 	/**
-	 * Returns the data string to send to Mixpanel and the maximum ID of the row that
-	 * we're sending, so we know what rows to delete when a track request was successful.
+	 * Returns the data string to send to Mixpanel, the maximum ID of the row that
+	 * we're sending so we know what rows to delete when a track request was successful,
+	 * and the timestamp of the oldest event.
 	 *
-	 * @return String array containing the maximum ID and the data string 
-	 * representing the events, or null if none could be successfully retrieved.
+	 * @return String array containing the maximum ID, the data string 
+	 * representing the events, and the oldest timestamp, 
+	 * or null if none could be successfully retrieved.
 	 */
 	public String[] generateDataString() {
 		synchronized (this) {
 			Cursor c = null;
 			String data = null;
 			String last_id = null;
+			String oldest_timestamp = null;
 
 			try {
 				SQLiteDatabase db = mDb.getReadableDatabase();
@@ -178,6 +181,9 @@ public class MPDbAdapter {
 				JSONArray arr = new JSONArray();
 
 				while (c.moveToNext()) {
+					if (c.isFirst()) {
+						oldest_timestamp = c.getString(c.getColumnIndex(KEY_CREATED_AT));
+					}
 					if (c.isLast()) {
 						last_id = c.getString(c.getColumnIndex("_id"));
 					}
@@ -202,10 +208,39 @@ public class MPDbAdapter {
 			}
 
 			if (last_id != null && data != null) {
-				String[] ret = {last_id, data};
+				String[] ret = {last_id, data, oldest_timestamp};
 				return ret;
 			}
 			return null;
+		}
+	}
+	
+	/**
+	 * Return the timestamp of the oldest event, or -1 if no events exist.
+	 */
+	public long getOldestTimestamp() {
+		synchronized(this) {
+			Cursor c = null;
+			
+			try {
+				SQLiteDatabase db = mDb.getReadableDatabase();
+				c = db.rawQuery("SELECT " + KEY_CREATED_AT + " FROM " + DATABASE_TABLE +
+						        " WHERE token = '" + mToken + "'" +
+		    		            " ORDER BY " + KEY_CREATED_AT + " ASC LIMIT 1", null);
+				if (c.moveToFirst()) {
+					return c.getLong(0);
+				} else {
+					return -1;
+				}
+			} catch (SQLiteException e) {
+				Log.e(LOGTAG, "generateDataString", e);
+			} finally {
+				mDb.close();
+				if (c != null) {
+					c.close();
+				}
+			}
+			return -1;
 		}
 	}
 }

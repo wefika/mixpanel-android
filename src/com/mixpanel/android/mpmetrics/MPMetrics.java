@@ -233,9 +233,12 @@ public class MPMetrics {
 				return;
 			}
 			
-			// Check if we are wifi only and if there is wifi
+			// Don't send data if we are wifiOnly, there is no wifi, and the oldest event is younger
+			// than 24 hours ago
 			if (MPMetrics.wifiOnly && !MPMetrics.this.isWifiConnected()) {
-				return;
+				if (data[2] != null && Long.parseLong(data[2]) > System.currentTimeMillis() - 1000 * 60 * 60 * 24) {
+					return;
+				}
 			}
 
 	    	// Post the data

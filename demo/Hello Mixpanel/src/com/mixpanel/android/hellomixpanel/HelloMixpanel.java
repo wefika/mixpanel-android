@@ -22,6 +22,7 @@ public class HelloMixpanel extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        MPMetrics.setWifiOnly(true);
         mMPMetrics = MPMetrics.getInstance(this, "c35a4b5163ee2c097de447765f691544");
         
         mButton = (Button) findViewById(R.id.button);
@@ -35,7 +36,7 @@ public class HelloMixpanel extends Activity {
 	                properties.put("registered", true);
 	                properties.put("some list", new JSONArray("[1,2,3,4,5]"));
                 } catch(JSONException e) { }
-                mMPMetrics.track("Button Clicked", properties);
+                mMPMetrics.track("test event", properties);
             }
         });
     }
