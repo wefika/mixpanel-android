@@ -2,6 +2,9 @@ Documentation: http://mixpanel.com/api/docs/guides/android
 
 Demo: See the demo/ folder for a working demo application
 
+This is the version of the library that provides a function to set sending of events over a Wifi connection only.
+The reason this is a separate branch is that this requires you to set the additional android.permission.ACCESS_NETWORK_STATE permission.
+
 Changelog:
 
 v1.2

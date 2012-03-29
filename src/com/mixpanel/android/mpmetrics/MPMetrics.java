@@ -26,6 +26,8 @@ import org.json.JSONObject;
 import com.mixpanel.android.util.StringUtils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
@@ -44,6 +46,7 @@ public class MPMetrics {
     private static HashMap<String, MPMetrics> mInstanceMap = new HashMap<String, MPMetrics>();
     
     private static String track_endpoint = "http://api.mixpanel.com/track?ip=1";
+    private static boolean wifiOnly = false;
 
     private Context mContext;
 
@@ -229,6 +232,11 @@ public class MPMetrics {
 				// Couldn't get data for whatever reason, so just return.
 				return;
 			}
+			
+			// Check if we are wifi only and if there is wifi
+			if (MPMetrics.wifiOnly && !MPMetrics.this.isWifiConnected()) {
+				return;
+			}
 
 	    	// Post the data
 		    HttpClient httpclient = new DefaultHttpClient();
@@ -278,6 +286,13 @@ public class MPMetrics {
 		}
     }
     
+    private boolean isWifiConnected() {
+    	ConnectivityManager connManager = (ConnectivityManager) this.mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+    	return mWifi.isConnected();
+    }
+    
     public static MPMetrics getInstance(Context context, String token) {
     	MPMetrics instance = mInstanceMap.get(token);
     	if (instance == null) {
@@ -294,5 +309,12 @@ public class MPMetrics {
      */
     public static void setTrackEndpoint(String address) {
     	MPMetrics.track_endpoint = address;
+    }
+    
+    /**
+     * @param w true if you want to only send events when a WiFi connection exists
+     */
+    public static void setWifiOnly(boolean w) {
+    	MPMetrics.wifiOnly = w;
     }
 }
