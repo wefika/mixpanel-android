@@ -10,10 +10,8 @@
   <properties>
     <appVersion>${project.version}</appVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Please make sure environment variable ANDROID_HOME is defined correctly -->
-    <ANDROID_SDK_ROOT>${env.ANDROID_HOME}</ANDROID_SDK_ROOT>
   </properties>
-  <dependencies>  
+  <dependencies>
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
@@ -23,92 +21,44 @@
   </dependencies>
   <build>
 
-    <finalName>${project.artifactId}</finalName>
-
-    <sourceDirectory>src</sourceDirectory>
-
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.jayway.maven.plugins.android.generation2
-          </groupId>
-          <artifactId>android-maven-plugin</artifactId>
-          <version>3.3.0</version>
-          <extensions>true</extensions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.7</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
     <plugins>
-       <!-- This is an alternative for the antrun plugin
-       <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-         <artifactId>exec-maven-plugin</artifactId>
-         <version>1.2.1</version>
-         <executions>
-	   <execution>
-	     <id>exec command: ant -f build.xml clean library</id>
-	     <phase>compile</phase>
-	     <goals>
-               <goal>exec</goal>
-	     </goals>
-             <configuration>
-               <executable>ant</executable>
-	       <workingDirectory>.</workingDirectory>
-	       <arguments>
-                 <argument>-f</argument>
-                 <argument>build.xml</argument>
-                 <argument>clean</argument>
-                 <argument>library</argument>
-	       </arguments>
-	     </configuration>
-	   </execution>
-	 </executions>
-      </plugin>
-      -->
-
-      <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId>
-        <configuration>
-          <sdk>
-            <path>${ANDROID_SDK_ROOT}</path>
-            <!-- platform or api level (api level 4 = platform 1.6) -->
-            <platform>16</platform>
-          </sdk>
-        </configuration>
-      </plugin>
-
-      <!--This is to provide an option to exercise the ant build settings in the project -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.7</version>
         <executions>
+
           <execution>
-	    <id>Test echo</id>
-            <phase>compile</phase>
+            <id>clean</id>
+            <phase>clean</phase>
             <configuration>
-	      <target unless="maven.test.skip">
-                <echo message="To skip me, just call mvn -Dmaven.test.skip=true"/>
+              <target name="ant-clean">
+                <ant antfile="${basedir}/build.xml" target="clean"/>
               </target>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
           </execution>
+
           <execution>
-	    <id>run command: ant clean library</id>
+            <id>compile</id>
             <phase>compile</phase>
             <configuration>
-              <target unless="ant.build.skip">
-		<exec executable="ant" failonerror="true">
-		  <arg line="-f build.xml clean library" />
-		</exec>
+              <target name="ant-compile">
+                <ant antfile="${basedir}/build.xml"><target name="compile"/></ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>package</id>
+            <phase>package</phase>
+            <configuration>
+              <target name="ant-package">
+                <ant antfile="${basedir}/build.xml" target="library"/>
               </target>
             </configuration>
             <goals>
@@ -120,25 +70,4 @@
       </plugin>
     </plugins>
   </build>
-  <!-- Release the artifact to a local maven repository: artifacts.xyz.com:8081
-     
-       Please uncomment and update the settings using a real maven repository when necessary 
-       
-       The distribution management settings can also be in a separate settings.xml file for Maven 
-
-  <distributionManagement>
-    <repository>
-      <id>artifacts.xyz.com</id>
-      <name>artifacts.xyz.com-releases</name>
-      <url>http://artifacts.xyz.com:8081/artifactory/libs-release-local
-      </url>
-    </repository>
-    <snapshotRepository>
-      <id>artifacts.xyz.com</id>
-      <name>artifacts.xyz.com-snapshots</name>
-      <url>http://artifacts.xyz.com:8081/artifactory/libs-snapshot-local
-      </url>
-    </snapshotRepository>
-  </distributionManagement>
-  -->
 </project>
