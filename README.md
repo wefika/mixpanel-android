@@ -1,4 +1,6 @@
-# Documentation
+# Mixpanel Android
+
+## Documentation
 
 You can find getting started guides for using Mixpanel at
 
@@ -8,11 +10,11 @@ You can find getting started guides for using Mixpanel at
 - [Sending push notifications](https://mixpanel.com/docs/integration-libraries/android#push_quick_start)
 - [Showing Surveys](https://mixpanel.com/docs/integration-libraries/android#surveys)
 
-# Demo
+## Demo
 
 See [mixpanel/mixpanel-android](https://github.com/mixpanel/mixpanel-android) for a full featured sample application.
 
-# License
+## License
 
     See LICENSE File for details. The Base64Coder,
     ConfigurationChecker, and StackBlurManager classes used by this
@@ -24,7 +26,7 @@ See [mixpanel/mixpanel-android](https://github.com/mixpanel/mixpanel-android) fo
     You can learn more about the algorithm at
     http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
 
-# Changelog
+## Changelog
 
     v4.0.0
     ---------------------
