@@ -103,7 +103,7 @@ public class MixpanelAPI {
         mStoredPreferences = context.getSharedPreferences("com.mixpanel.android.mpmetrics.MixpanelAPI_" + token, Context.MODE_PRIVATE);
         readSuperProperties();
         readIdentities();
-        registerMixpanelActivityLifecycleCallbacks();
+//        registerMixpanelActivityLifecycleCallbacks(); // TODO commented this because of library issues
     }
 
     /**
