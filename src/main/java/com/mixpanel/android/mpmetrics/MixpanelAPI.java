@@ -1,5 +1,19 @@
 package com.mixpanel.android.mpmetrics;
 
+import android.app.Activity;
+import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.os.Build;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,20 +24,6 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
-import android.app.Application;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.util.Log;
 
 /**
  * Core class for interacting with Mixpanel Analytics.
@@ -103,7 +103,7 @@ public class MixpanelAPI {
         mStoredPreferences = context.getSharedPreferences("com.mixpanel.android.mpmetrics.MixpanelAPI_" + token, Context.MODE_PRIVATE);
         readSuperProperties();
         readIdentities();
-//        registerMixpanelActivityLifecycleCallbacks(); // TODO commented this because of library issues
+        registerMixpanelActivityLifecycleCallbacks(); // TODO commented this because of library issues
     }
 
     /**
